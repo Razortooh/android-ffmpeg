@@ -6,10 +6,16 @@ pushd freetype2
 
 ./autogen.sh
 
+if [ $NDK_ABI = "x86" ]; then
+    CFLAGS="-std=gnu99"
+else
+    CFLAGS="-std=gnu99 -mcpu=cortex-a8 -marm -mfloat-abi=softfp -mfpu=neon"
+fi
+
 ./configure \
     CC="$CC" \
     LD="$LD" \
-    CFLAGS="-std=gnu99 -mcpu=cortex-a8 -marm -mfloat-abi=softfp -mfpu=neon" \
+    CFLAGS=$CFLAGS \
     --host=$HOST \
     --with-sysroot="$NDK_SYSROOT" \
     --enable-static \

@@ -15,10 +15,9 @@ if [ $(uname -m) = "x86_64" ]; then
 else
     NDK_PROCESSOR=x86
 fi
-
 # Android NDK setup
-NDK_PLATFORM_LEVEL=3
-NDK_ABI=arm
+NDK_PLATFORM_LEVEL=16
+NDK_ABI=x86
 NDK_COMPILER_VERSION=4.6
 NDK_SYSROOT=$NDK_BASE/platforms/android-$NDK_PLATFORM_LEVEL/arch-$NDK_ABI
 NDK_UNAME=`uname -s | tr '[A-Z]' '[a-z]'`
@@ -34,6 +33,9 @@ NDK_TOOLCHAIN_BASE=$NDK_BASE/toolchains/$NDK_TOOLCHAIN/prebuilt/$NDK_UNAME-$NDK_
 CC="$NDK_TOOLCHAIN_BASE/bin/$HOST-gcc --sysroot=$NDK_SYSROOT"
 LD=$NDK_TOOLCHAIN_BASE/bin/$HOST-ld
 STRIP=$NDK_TOOLCHAIN_BASE/bin/$HOST-strip
+echo "MY GCC TOOLCHAIN $CC"
+echo "MY LD TOOLCHAIN $LD"
+echo "MY STRIP TOOLCHAIN $STRIP"
 
 # i use only a small number of formats - set this to 0 if you want everything.
 # changed 0 to the default, so it'll compile shitloads of codecs normally
