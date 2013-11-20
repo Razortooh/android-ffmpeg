@@ -10,11 +10,12 @@ fi
 if [ "$NDK_ABI" = "x86" ]; then
     [ $compiler = GNU ]
     echo "ABI=${NDK_ABI}"
-    ARM_EXTRAS="--arch=x86_64"
+    EXTRA_CFLAGS="-mincoming-stack-boundary=4"
+    ARCH_EXTRAS="--arch=x86_64"
 else
     echo "No ABI set  ${NDK_ABI}"
     EXTRA_CFLAGS="-mfloat-abi=softfp -mfpu=neon"
-    ARM_EXTRAS="--arch=arm --cpu=cortex-a8"
+    ARCH_EXTRAS="--arch=arm --cpu=cortex-a8"
 fi
 # I haven't found a reliable way to install/uninstall a patch from a Makefile,
 # so just always try to apply it, and ignore it if it fails. Works fine unless
@@ -33,7 +34,7 @@ pushd ffmpeg
 
 ./configure \
 $DEBUG_FLAG \
-$ARM_EXTRAS \
+$ARCH_EXTRAS \
 --target-os=linux \
 --enable-runtime-cpudetect \
 --prefix=$prefix \
