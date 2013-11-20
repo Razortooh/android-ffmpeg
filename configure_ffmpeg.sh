@@ -7,6 +7,15 @@ if [[ $DEBUG == 1 ]]; then
   DEBUG_FLAG="--disable-stripping"
 fi
 
+if [ "$NDK_ABI" = "x86" ]; then
+    [ $compiler = GNU ]
+    echo "ABI=${NDK_ABI}"
+    ARM_EXTRAS="--arch=x86_64"
+else
+    echo "No ABI set  ${NDK_ABI}"
+    EXTRA_CFLAGS="-mfloat-abi=softfp -mfpu=neon"
+    ARM_EXTRAS="--arch=arm --cpu=cortex-a8"
+fi
 # I haven't found a reliable way to install/uninstall a patch from a Makefile,
 # so just always try to apply it, and ignore it if it fails. Works fine unless
 # the files being patched have changed, in which cause a partial application
@@ -24,24 +33,23 @@ pushd ffmpeg
 
 ./configure \
 $DEBUG_FLAG \
---arch=arm \
---cpu=cortex-a8 \
+$ARM_EXTRAS \
 --target-os=linux \
 --enable-runtime-cpudetect \
 --prefix=$prefix \
 --enable-pic \
 --disable-shared \
 --enable-static \
---cross-prefix=$NDK_TOOLCHAIN_BASE/bin/$NDK_ABI-linux-androideabi- \
+--cross-prefix=$NDK_TOOLCHAIN_BASE/bin/$HOST- \
 --sysroot="$NDK_SYSROOT" \
---extra-cflags="-I../x264 -mfloat-abi=softfp -mfpu=neon" \
+--extra-cflags="-I../x264 $EXTRA_CFLAGS" \
 --extra-ldflags="-L../x264" \
 \
 --enable-version3 \
 --enable-gpl \
 \
 --disable-doc \
---enable-yasm \
+--disable-yasm \
 \
 --enable-decoders \
 --enable-encoders \
